@@ -7,17 +7,17 @@ try{
  const path=norm(location.pathname);
  const[g,p]=await Promise.all([sb.from('website_visual_settings').select('*').eq('id',1).single(),sb.from('website_pages').select('*').eq('path',path).maybeSingle()]);
  const s=g.data||{},x=p.data||{};
- document.documentElement.style.setProperty('--website-accent',safeColor(s.accent_color,'#171718'));
+ const accent=safeColor(s.accent_color,'#171718');
+ document.documentElement.style.setProperty('--website-accent',accent);
  const header=document.querySelector('header');if(header&&s.header_background)header.style.background=safeColor(s.header_background,'#0a0a0b');
- const brand=document.querySelector('.brand');const logo=safeUrl(s.logo_url);if(brand&&logo){brand.style.backgroundImage=`url("${logo}")`;brand.style.backgroundSize='contain';brand.style.backgroundRepeat='no-repeat';brand.style.backgroundPosition='left center'}
- // Homepage already has its own full settings renderer. This module only adds page-level overrides there.
+ const brand=document.querySelector('.brand');const logo=safeUrl(s.logo_url);if(brand&&logo){brand.style.backgroundImage=`url("${logo}")`;brand.style.backgroundSize='contain';brand.style.backgroundRepeat='no-repeat';brand.style.backgroundPosition='left center';brand.setAttribute('aria-label','Lake James Canopies')}
  const hero=document.querySelector('.hero,.pagehero,.pageHero,.projectHero,.serviceHero,.locationHero,[data-site-hero]');
  if(hero){
    const image=safeUrl(x.hero_image_url);if(image){const raw=Number(s.hero_overlay),o=Math.max(0,Math.min(95,Number.isFinite(raw)?raw:72))/100;hero.style.backgroundImage=`linear-gradient(90deg,rgba(0,0,0,${Math.min(.95,o+.12)}),rgba(0,0,0,${Math.max(0,o-.25)})),url("${image}")`;hero.style.backgroundSize='cover';hero.style.backgroundPosition='center'}
    const eyebrow=hero.querySelector('.eyebrow,.kicker,[data-hero-eyebrow]'),h1=hero.querySelector('h1,[data-hero-headline]');
    let para=hero.querySelector('[data-hero-subheadline]');if(!para&&h1){let n=h1.nextElementSibling;while(n&&!para){if(n.matches?.('p'))para=n;if(n.matches?.('div,section,article'))break;n=n.nextElementSibling}}
-   const btn=hero.querySelector('a.btn,[data-hero-cta]');
+   const btn=hero.querySelector('a.btn,a.button,[data-hero-cta]');
    if(eyebrow&&x.hero_eyebrow)eyebrow.textContent=x.hero_eyebrow;if(h1&&x.hero_headline)h1.textContent=x.hero_headline;if(para&&x.hero_subheadline)para.textContent=x.hero_subheadline;
-   if(btn&&x.cta_text){btn.textContent=x.cta_text;const href=safeUrl(x.cta_href);if(href)btn.href=href}
+   if(btn){btn.style.background=accent;btn.style.color='#fff';if(x.cta_text)btn.textContent=x.cta_text;const href=safeUrl(x.cta_href);if(href)btn.href=href}
  }
 }catch(e){console.warn('Site manager unavailable; using built-in page content.',e)}
