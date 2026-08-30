@@ -1,7 +1,11 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /field/
 
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /admin/
+Disallow: /field/
 
 Sitemap: https://www.lakejamescanopies.com/sitemap.xml
