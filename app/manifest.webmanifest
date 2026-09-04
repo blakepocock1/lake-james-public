@@ -1,0 +1,14 @@
+{
+  "name": "Lake James Canopies Command",
+  "short_name": "LJC Command",
+  "description": "Lake James Canopies operating system for projects, field operations, sales, materials, workforce and management.",
+  "start_url": "/app/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#111111",
+  "orientation": "portrait-primary",
+  "icons": [
+    {"src":"/app/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
