@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111111">
+  <title>LJC Command</title>
+  <style>html,body{height:100%;margin:0;background:#111;color:#fff;font-family:Arial,sans-serif}main{height:100%;display:grid;place-items:center;text-align:center;padding:24px}b{font-size:22px}p{color:#bbb;max-width:360px}</style>
+</head>
+<body>
+<main><div><b>LJC Command</b><p>Opening the secure Lake James Canopies operating system…</p></div></main>
+<script type="module">
+import { App } from '@capacitor/app';
+import { Network } from '@capacitor/network';
+import { PushNotifications } from '@capacitor/push-notifications';
+
+async function setupNative(){
+  try {
+    const permission = await PushNotifications.checkPermissions();
+    if (permission.receive === 'prompt') await PushNotifications.requestPermissions();
+    const after = await PushNotifications.checkPermissions();
+    if (after.receive === 'granted') await PushNotifications.register();
+
+    PushNotifications.addListener('registration', token => {
+      window.localStorage.setItem('ljc_push_token', token.value);
+    });
+    PushNotifications.addListener('pushNotificationActionPerformed', event => {
+      const path = event.notification?.data?.path || '/app/';
+      window.location.href = `https://lakejamescanopies.com${path}`;
+    });
+  } catch {}
+
+  try {
+    const status = await Network.getStatus();
+    window.localStorage.setItem('ljc_native_network', status.connected ? 'online' : 'offline');
+    Network.addListener('networkStatusChange', s => {
+      window.localStorage.setItem('ljc_native_network', s.connected ? 'online' : 'offline');
+    });
+  } catch {}
+
+  try {
+    App.addListener('appUrlOpen', ({url}) => {
+      const parsed = new URL(url);
+      if (parsed.hostname === 'lakejamescanopies.com') window.location.href = url;
+    });
+  } catch {}
+
+  window.location.replace('https://lakejamescanopies.com/app/');
+}
+setupNative();
+</script>
+</body>
+</html>
